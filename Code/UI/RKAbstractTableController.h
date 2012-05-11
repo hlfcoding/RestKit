@@ -309,6 +309,8 @@ extern NSString* const RKTableControllerDidBecomeOffline;
 // Sections
 - (void)tableController:(RKAbstractTableController *)tableController didInsertSection:(RKTableSection *)section atIndex:(NSUInteger)sectionIndex;
 - (void)tableController:(RKAbstractTableController *)tableController didRemoveSection:(RKTableSection *)section atIndex:(NSUInteger)sectionIndex;
+- (CGFloat)tableController:(RKAbstractTableController *)tableController heightForHeaderInSection:(NSInteger)section currentHeight:(CGFloat)height;
+- (CGFloat)tableController:(RKAbstractTableController *)tableController heightForFooterInSection:(NSInteger)section currentHeight:(CGFloat)height;
 
 // Objects
 - (void)tableController:(RKAbstractTableController *)tableController didInsertObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
@@ -322,6 +324,9 @@ extern NSString* const RKTableControllerDidBecomeOffline;
 // Swipe Views
 - (void)tableController:(RKAbstractTableController *)tableController willAddSwipeView:(UIView*)swipeView toCell:(UITableViewCell *)cell forObject:(id)object;
 - (void)tableController:(RKAbstractTableController *)tableController willRemoveSwipeView:(UIView*)swipeView fromCell:(UITableViewCell *)cell forObject:(id)object;
+
+- (CGFloat)tableController:(RKAbstractTableController *)tableController heightForRowAtIndexPath:(NSIndexPath*)indexPath currentHeight:(CGFloat)height;
+
 
 // BELOW NOT YET IMPLEMENTED
 

@@ -541,15 +541,22 @@ static NSString* lastUpdatedDateDictionaryKey = @"lastUpdatedDateDictionaryKey";
     if (self.variableHeightRows) {
         RKTableViewCellMapping* cellMapping = [self cellMappingForObjectAtIndexPath:indexPath];
 
+        CGFloat height = 0;
+        
         if (cellMapping.heightOfCellForObjectAtIndexPath) {
             id object = [self objectForRowAtIndexPath:indexPath];
-            CGFloat height = cellMapping.heightOfCellForObjectAtIndexPath(object, indexPath);
+            height = cellMapping.heightOfCellForObjectAtIndexPath(object, indexPath);
             RKLogTrace(@"Variable row height configured for tableView. Height via block invocation for row at indexPath '%@' = %f", indexPath, cellMapping.rowHeight);
-            return height;
         } else {
             RKLogTrace(@"Variable row height configured for tableView. Height for row at indexPath '%@' = %f", indexPath, cellMapping.rowHeight);
-            return cellMapping.rowHeight;
+            height = cellMapping.rowHeight;
         }
+
+        if ([self.delegate respondsToSelector:@selector(tableController:heightForRowAtIndexPath:currentHeight:)]) {
+            height = [self.delegate tableController:self heightForRowAtIndexPath:indexPath currentHeight:height];
+        }
+        
+        return height;
     }
 
     RKLogTrace(@"Uniform row height configured for tableView. Table view row height = %f", self.tableView.rowHeight);
@@ -559,13 +566,26 @@ static NSString* lastUpdatedDateDictionaryKey = @"lastUpdatedDateDictionaryKey";
 - (CGFloat)tableView:(UITableView*)theTableView heightForHeaderInSection:(NSInteger)sectionIndex {
     NSAssert(theTableView == self.tableView, @"heightForHeaderInSection: invoked with inappropriate tableView: %@", theTableView);
     RKTableSection* section = [self sectionAtIndex:sectionIndex];
-    return section.headerHeight;
+
+    CGFloat height = section.headerHeight;
+    
+    if ([self.delegate respondsToSelector:@selector(tableController:heightForHeaderInSection:currentHeight:)]) {
+        height = [self.delegate tableController:self heightForHeaderInSection:sectionIndex currentHeight:height];
+    }
+    
+    return height;
 }
 
 - (CGFloat)tableView:(UITableView*)theTableView heightForFooterInSection:(NSInteger)sectionIndex {
     NSAssert(theTableView == self.tableView, @"heightForFooterInSection: invoked with inappropriate tableView: %@", theTableView);
     RKTableSection* section = [self sectionAtIndex:sectionIndex];
-    return section.footerHeight;
+    CGFloat height = section.footerHeight;
+    
+    if ([self.delegate respondsToSelector:@selector(tableController:heightForFooterInSection:currentHeight:)]) {
+        height = [self.delegate tableController:self heightForFooterInSection:sectionIndex currentHeight:height];
+    }
+    
+    return height;
 }
 
 - (UIView*)tableView:(UITableView*)theTableView viewForHeaderInSection:(NSInteger)sectionIndex {
